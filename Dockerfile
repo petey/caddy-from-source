@@ -22,6 +22,6 @@ COPY Caddyfile /etc/Caddyfile
 COPY index.html /srv/index.html
 
 EXPOSE 80 443 2015
-VOLUME     [ "/root/.caddy" ]
-ENTRYPOINT [ "/usr/bin/caddy" ]
+VOLUME     ["/root/.caddy"]
+ENTRYPOINT ["/usr/bin/caddy"]
 CMD ["--conf", "/etc/Caddyfile", "--log", "stdout"]
