@@ -3,18 +3,22 @@
 # * https://hub.docker.com/r/sapk/caddy/
 # * https://hub.docker.com/r/abiosoft/caddy/
 
-FROM alpine:latest
+FROM golang:alpine
 LABEL caddy_version="dev" architecture="amd64"
 
-ENV GOPATH="/go"
-
 RUN    apk -U --no-progress upgrade \
-    && apk -U --force --no-progress add \
-          build-tools go git ca-certificates musl-dev \
-    && mkdir /go \
-    && go get github.com/mholt/caddy/caddy \
+    && apk -U --force --no-progress add git \
+    && git clone https://github.com/mholt/caddy.git /go/src/github.com/mholt/caddy \
+    && cd /go/src/github.com/mholt/caddy \
+    && git config --global user.email "caddy@caddyserver.com" \
+    && git config --global user.name "caddy" \
+    && git fetch origin pull/1316/head:websocket \
+    && git checkout websocket \
+    && git rebase origin/master \
+    && cd /go \
+    && go get -v ... \
     && mv /go/bin/caddy /usr/bin \
-    && apk del --purge build-tools go git \
+    && apk del --purge git \
     && rm -rf $GOPATH /var/cache/apk/*
 
 WORKDIR /srv
